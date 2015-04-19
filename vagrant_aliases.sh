@@ -7,9 +7,7 @@
 #
 # -----------------------------------------------------------------------------
 
-PATH=$PATH:/Applications/VirtualBox.app/Contents/MacOS/
-PATH=$PATH:~/.composer/vendor/bin
-export PATH
+export PATH=$PATH:/Applications/VirtualBox.app/Contents/MacOS/
 
 if [[ -z $(which vagrant) ]]; then
 
@@ -26,7 +24,8 @@ if [[ -z $(which vagrant) ]]; then
                 ;;
         esac      
     }
-
+else
+    
     #
     #   Vagrant Aliases
     #    
