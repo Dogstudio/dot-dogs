@@ -7,7 +7,11 @@
 #
 # -----------------------------------------------------------------------------
 
-if [[ -n $(type -t completor) ]]; then
+if [[ -n $(type -t complete) ]]; then
+    
+    #
+    #   Complete connexion name based on SSH config
+    #
     _complete() {
         local word="${COMP_WORDS[COMP_CWORD]}"
 

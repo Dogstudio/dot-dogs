@@ -88,13 +88,20 @@ On commence par dupliquer le projet GIT reprenant les scripts :
     git clone git@gitlab.dogstudio.be:devtools/vagrantdog.git ~/.scripts
     bash ~/.scripts/install.sh
 
+_Pour mettre à jour, il suffit de récuperer les derniers commit et de relancer le script d'installation:_
+
+    git pull origin master && ./install.sh
+
 ### Avec CURL
 
 Créer un répertoire pour accueillir les scripts et lancer la commande d'installation : 
 
     curl -Ss https://repositories.dogstudio.be/devtools/vagrantshell/raw/master/install.sh | bash
 
-_La commande téléchargera une archive des scripts et les installera._
+La commande téléchargera une archive des scripts et les installera.
+
+_Pour mettre à jour, il suffit de relancer la commande._
+
 
 
 
