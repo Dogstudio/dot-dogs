@@ -8,11 +8,9 @@
 # -----------------------------------------------------------------------------
 
 # Get current script
-SCRIPT_URL="http://gitlab.dogstudio.be:800/devtools/terminaldog.git"
+SCRIPT_URL="git@gitlab.dogstudio.be:devtools/terminaldog.git"
 SCRIPT_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd -P)
 SCRIPT_PROFILE="$HOME/.bashrc"
-
-echo -e "Installing Dogshell"
 
 # Install from remote 
 if [[ $(basename $0) != "install.sh" ]]; then
@@ -34,7 +32,7 @@ else
         if [[ $(grep -s "$SCRIPT_PATH/$FILE" $SCRIPT_PROFILE) ]]; then
             echo -e "\tScript $FILE already installed."
         else
-            echo -e "\tAdd $FILE to .bashrc"
+            echo -e "\tAdd $FILE to $SCRIPT_PROFILE"
             echo "source $SCRIPT_PATH/$FILE" >> $SCRIPT_PROFILE
         fi
     done
