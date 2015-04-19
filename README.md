@@ -85,7 +85,7 @@ Si vous souhaitez bénéficier des mises à jour, vous pouvez utiliser GIT.
 On commence par dupliquer le projet GIT reprenant les scripts : 
 
     mkdir ~/.scripts
-    git clone git@gitlab.dogstudio.be:devtools/vagrantdog.git ~/.scripts
+    git clone git@gitlab.dogstudio.be:devtools/terminaldog.git ~/.scripts
     bash ~/.scripts/install.sh
 
 _Pour mettre à jour, il suffit de récuperer les derniers commit et de relancer le script d'installation:_
@@ -96,7 +96,7 @@ _Pour mettre à jour, il suffit de récuperer les derniers commit et de relancer
 
 Créer un répertoire pour accueillir les scripts et lancer la commande d'installation : 
 
-    curl -Ss https://repositories.dogstudio.be/devtools/vagrantshell/raw/master/install.sh | bash
+    curl -Ss https://repositories.dogstudio.be/devtools/terminaldog/raw/master/install.sh | bash
 
 La commande téléchargera une archive des scripts et les installera.
 
