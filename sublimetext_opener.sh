@@ -7,35 +7,36 @@
 #
 # -----------------------------------------------------------------------------
 
-if [[ -z $(which subl) ]]; then 
+if [[ -n $(which subl) ]]; then 
 
     #
     #   Add autodetection on Sublimetext opener
     #
     function openSublime() {
         SUBL_FILE=$@
-        SUBL_CMD='/usr/local/bin/subl'
+        SUBL_CMD=$(which subl)
 
-        # Only one argument...
-        if (( $# > 1 )); then 
-
-            # Is Directory...
-            if [ -d "${SUBL_FILE}" ]; then
-                
-                # ...whitout "Project"
-                SUB_PROJECT=$(ls *.sublime-project 2>/dev/null)
-                [ -z "${SUB_PROJECT}" ] && { $SUBL_CMD -n ${SUBL_FILE}; exit 0; }
-                
-                # ...with "Project"
-                SUBL_FILE="${SUBL_FILE}/${SUB_PROJECT}"
-            fi
-
-            # Is Project... 
-            [ "${SUBL_FILE}" == *".sublime-project" ] && { $SUBL_CMD -n --project ${SUBL_FILE}; exit 0; }
-
+        # No argument...
+        if (( $# < 1 )); then 
+            SUB_PROJECT=$(ls *.sublime-project 2>/dev/null)
+            [ -n "${SUB_PROJECT}" ] && SUBL_FILE="${SUB_PROJECT}"
         fi
 
-        # ... or a Simple file
+        # Is Directory...
+        if [ -d "${SUBL_FILE}" ]; then
+
+            # ...whitout "Project"
+            SUB_PROJECT=$(ls $SUBL_FILE*.sublime-project 2>/dev/null)
+            [ -z "${SUB_PROJECT}" ] && { $SUBL_CMD -n ${SUBL_FILE}; return ; }
+            
+            # ...with "Project"
+            SUBL_FILE="${SUB_PROJECT}"
+        fi
+
+        # Is Project... 
+        [ "${SUBL_FILE}" == *".sublime-project" ] && { $SUBL_CMD -n --project ${SUBL_FILE}; return ; }
+
+        # ... or multiple file
         $SUBL_CMD ${SUBL_FILE}
     }
 
