@@ -8,7 +8,7 @@
 # -----------------------------------------------------------------------------
 
 # Get current script
-SCRIPT_URL="https://repositories.dogstudio.be/devtools/vagrantshell/raw/master/install.sh"
+SCRIPT_URL="https://repositories.dogstudio.be/devtools/terminaldog/raw/master/install.sh"
 SCRIPT_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd -P)
 SCRIPT_PROFILE="$HOME/.bashrc"
 
