@@ -6,7 +6,7 @@ Il s'agit d'une série de scripts permettant d'ajouter des fonctionnalités et d
 
 ## Les scritps
 
-### `bash_aliases.sh`
+### Aliases
 
 Ajoute des "alias" de commandes tels que :
 
@@ -15,7 +15,7 @@ Ajoute des "alias" de commandes tels que :
 * `..` : remote d'un répertoire (`cd ..`)
 * `...` : remote de deux répertoires (`cd ../..`)
 
-### `bash_promopt.sh`
+### Prompt
 
 Modifier l'invite de votre Shell : 
 
@@ -26,7 +26,7 @@ Modifier l'invite de votre Shell :
     * En **rouge** : modifications pas encore commitées
     * En **jaune** : des fichiers sont ajoutés et près à être commité.
 
-### `vagrant_aliases.sh`
+### Vagrant
 
 Ajout des "alias" pour les commandes _Vagrant_
 
@@ -35,20 +35,18 @@ Ajout des "alias" pour les commandes _Vagrant_
 * `vdestroy` : pour supprimer la VM
 * `vlist` : lister mes VM en cours d'exécution
 
-Si ce script est utiliser dans une machine Vagrant, il ajoute seulement la commande `vhalt` qui permet de stopper la machine (et affiche un message d'erreur pour les autres commandes).
+Si ce script est utiliser **dans une machine Vagrant**, il ajoute seulement la commande `vhalt` qui permet de stopper la machine (et affiche un message d'erreur pour les autres commandes).
 
-### `ssh_complete.sh`
+### SSH Autocomplete
 
-Si vous utilisez souvent SSH pour vous connecter à des serveurs distants, vous utilisez certainement `.ssh/config` pour enregister vos paramètres de connexions.
+Si vous utilisez souvent SSH avec des serveurs distants, vous utilisez certainement `.ssh/config` pour enregister vos paramètres de connexions.
 Ce script permet d'effectuer une "auto-completion" sur les noms des connexions.
 
-**Utilisation**
+**Utilisation** : Quand vous tapper le début du nom d'une de vos connexions SSH, utiliser la touhce `TAB` pour completer ce nom.
 
-Quand vous tapper le début du nom d'une de vos connexions SSH, utiliser la touhce `TAB` pour completer ce nom.
+* `ssh dog[TAB]` => `ssh dogstudio01`  
 
-* `ssh dog[TAB]` > `ssh dogstudio01`  
-
-### `sublimetext_opener.sh`
+### SublimeText
 
 **Pour les utilisateurs de SublimeText**, ce script permet de lancer l'applicaiton en détectant automatiquement _l'environnement_. 
 
@@ -63,28 +61,26 @@ Si vous exécuter la commande sans paramètres , détecte la présence d'un fich
 * Ouvre le projet si un fichier est détecté
 * Sinon, ajoute le répertoire au "Workspace"
 
-
 ---
 
 ## Installation des scripts
 
 Pour utiliser ces scripts vous avez plusieurs possibilités.
 
-### Manuellement
+### Avec CURL
 
-IL faut télécharger l'archive des scripts et le placer dans un répertoire de votre choix (ex: `~/.scripts`)
+**Méthode recommandée si vous ne comptez pas effectuer de modification sur les scripts.**
 
-Ensuite, editer votre fichier `~/.bashrc` et indiquer quels sont ceux qui doivent être exécuter lors lancement d'un terminal en ajoutant chaque script précédé du mot clé `source` à la fin du fichier :
+Créez un répertoire pour accueillir les scripts et lancez y la commande d'installation suivante : 
 
-    source .scripts/bash_prompt.sh
+    curl -Ss https://repositories.dogstudio.be/devtools/terminaldog/raw/master/install.sh | bash
+
+Celle-ci téléchargera les scripts et les installera.
+
+_Pour mettre à jour, il suffit de relancer la commande._
 
 ### Avec GIT 
 
-Si vous souhaitez bénéficier des mises à jour, vous pouvez utiliser GIT.
- 
-On commence par dupliquer le projet GIT reprenant les scripts : 
-
-    mkdir ~/.scripts
     git clone git@gitlab.dogstudio.be:devtools/terminaldog.git ~/.scripts
     bash ~/.scripts/install.sh
 
@@ -92,15 +88,13 @@ _Pour mettre à jour, il suffit de récuperer les derniers commit et de relancer
 
     git pull origin master && ./install.sh
 
-### Avec CURL
+### Manuellement (non recommandé)
 
-Créer un répertoire pour accueillir les scripts et lancer la commande d'installation : 
+Il faut télécharger les scripts et les placer dans un répertoire de votre choix (ex: `~/.scripts`)
 
-    curl -Ss https://repositories.dogstudio.be/devtools/terminaldog/raw/master/install.sh | bash
+Ensuite, editer votre fichier `~/.bashrc` et ajoutez une `source` pour chaque script à importer :
 
-La commande téléchargera une archive des scripts et les installera.
-
-_Pour mettre à jour, il suffit de relancer la commande._
+    source .scripts/bash_prompt.sh
 
 
 
