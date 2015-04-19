@@ -8,7 +8,7 @@
 # -----------------------------------------------------------------------------
 
 # Get current script
-SCRIPT_URL="https://repositories.dogstudio.be/devtools/terminaldog/raw/master/install.sh"
+SCRIPT_URL="http://gitlab.dogstudio.be:800/devtools/terminaldog.git"
 SCRIPT_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd -P)
 SCRIPT_PROFILE="$HOME/.bashrc"
 
