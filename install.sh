@@ -19,15 +19,12 @@ if [[ $(basename $0) != "install.sh" ]]; then
 
 # Install localy
 else
-    # Add to profile
-    for FILE in $HOME/.profile $HOME/.bash_profile $HOME/.bashrc; do
-        if [[ -f $FILE ]]; then
-            if [[ $(grep -s "$SOTE_PATH" $FILE) ]]; then
-                unset FILE; break
-            fi
-        fi
-    done
+    # Test .bashrc is loaded
+    if [[ -f "$HOME/.bash_profile" && $(grep -s ".bashrc" $HOME/.bash_profile) ]]; then
+        echo "\tWARNING: .bashrc seems not included in .bash_profile"
+    fi
 
+    # Add scripts to "Bashrc"
     for FILE in $(ls *.sh | grep -v "install"); do
         if [[ $(grep -s "$SCRIPT_PATH/$FILE" $SCRIPT_PROFILE) ]]; then
             echo -e "\tScript $FILE already installed."
@@ -36,4 +33,6 @@ else
             echo "source $SCRIPT_PATH/$FILE" >> $SCRIPT_PROFILE
         fi
     done
+
+    source $SCRIPT_PROFILE
 fi
