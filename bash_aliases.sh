@@ -12,8 +12,7 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-
-alias l='clear; ls -la'
+alias l='clear; ls -lAh'
 alias duh='du -hs'
 alias tree="find . | sed 's/[^/]*\//|   /g;s/| *\([^| ]\)/+--- \1/'"
 alias wget="wget -c"
