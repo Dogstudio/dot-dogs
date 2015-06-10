@@ -20,3 +20,5 @@ alias wget="wget -c"
 alias ..='cd ..'
 alias ...='cd ../../'
 alias ....='cd ../../../'
+
+alias phpserv='php -S 0.0.0.0:8080 -t ./'
