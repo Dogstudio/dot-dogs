@@ -70,13 +70,13 @@ function getGitBranch {
 function setUserColor {
     USERID=`id -u`
     if (( 0 == "$(id -u)" )); then
-        USER="${LIGHT_RED}"
+        USERNAME="${LIGHT_RED}"
 
     elif [[ "$(logname 2>/dev/null)" != "$(id -u -n)" ]]; then
-        USER="${LIGHT_GRAY}"
+        USERNAME="${LIGHT_GRAY}"
 
     else
-        USER="${BLUE}"
+        USERNAME="${BLUE}"
     fi
 }
 
@@ -100,7 +100,7 @@ function setBashPrompt {
     setUserColor
     setConnection
 
-    PS1="\n${USER}${SESSION}${COLOR_NONE}\w${BRANCH}${COLOR_NONE}\n➜ "
+    PS1="\n${USERNAME}${SESSION}${COLOR_NONE}\w${BRANCH}${COLOR_NONE}\n➜ "
 }
 
 PROMPT_COMMAND=setBashPrompt
