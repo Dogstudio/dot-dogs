@@ -13,12 +13,17 @@ if [ -e "$(which docker-machine)" ]; then
         export DOCKER_MACHINE_NAME="${DOCKER_MACHINE_NAME:-$(docker-machine ls -q | head -n 1)}"
     }
 
-    function _dockerMachineRunning()
+    # -------------------------------------------------------------------------
+
+    function _dockerAlias()
     {
-        _dockerMachineName $1
-        docker-machine ls --filter state=Running --filter name=$DOCKER_MACHINE_NAME -q | head -n 1
+        alias doup="docker-compose build --no-cache && docker-compose up -d"
+        alias dodown="docker-compose stop"
+        alias dologs="docker-compose logs"
     }
     
+    # -------------------------------------------------------------------------
+
     function _dockerInit()
     {
         _dockerMachineName $1
@@ -30,7 +35,11 @@ if [ -e "$(which docker-machine)" ]; then
   
         eval $(docker-machine env $DOCKER_MACHINE_NAME) && 
         echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_GREEN}running${DOCKER_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+
+        _dockerAlias
     }
+
+    # -------------------------------------------------------------------------
 
     function dostart()
     {
@@ -51,6 +60,8 @@ if [ -e "$(which docker-machine)" ]; then
         echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_GREEN}started${DOCKER_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
     }
 
+    # -------------------------------------------------------------------------
+
     function dostop()
     {
         _dockerMachineName $1
@@ -69,6 +80,8 @@ if [ -e "$(which docker-machine)" ]; then
         echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_GREEN}stopped${DOCKER_NONE}, now\n"
     }
 
+    # -------------------------------------------------------------------------
+
     function doconnect()
     {
         _dockerMachineName $1
@@ -77,6 +90,8 @@ if [ -e "$(which docker-machine)" ]; then
             if $(docker-machine env ${DOCKER_MACHINE_NAME} >/dev/null 2>&1) ; then
                 eval "$(docker-machine env ${DOCKER_MACHINE_NAME})"
                 echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_GREEN}connected${DOCKER_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+
+                _dockerAlias
             else
                 echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_RED}disconnected${DOCKER_NONE}\n"
             fi
@@ -84,6 +99,21 @@ if [ -e "$(which docker-machine)" ]; then
             echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_RED}stopped${DOCKER_NONE}\n"
         fi
     }
+
+    # -------------------------------------------------------------------------
+
+    function dohelp()
+    {
+        echo -e "${DOCKER_PREFIX} Helper Commands.\n"
+        echo -e "  ${DOCKER_BLUE}dostart${DOCKER_NONE} : Detect and start a Docker VM."
+        echo -e "  ${DOCKER_BLUE}dostop${DOCKER_NONE} : Stop the connected Docker VM."
+        echo -e "  ${DOCKER_BLUE}doconnect${DOCKER_NONE} : Set Docker environnement for your shell."
+        echo -e "  ${DOCKER_BLUE}doup${DOCKER_NONE} : Build and Up the current Docker compose."
+        echo -e "  ${DOCKER_BLUE}dodown${DOCKER_NONE} : Down the current Docker compose."
+        echo -e "  ${DOCKER_BLUE}dologs${DOCKER_NONE} : Start the Logging system for the current Docker compose."
+    }
+
+    # -------------------------------------------------------------------------
 
     _dockerInit
 fi
