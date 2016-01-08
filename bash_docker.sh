@@ -17,7 +17,7 @@ if [ -e "$(which docker-machine)" ]; then
 
     function _dockerAlias()
     {
-        alias doup="docker-compose build --no-cache && docker-compose up -d"
+        alias doup="docker-compose build && docker-compose up -d"
         alias dodown="docker-compose stop"
         alias dologs="docker-compose logs"
     }
@@ -58,6 +58,8 @@ if [ -e "$(which docker-machine)" ]; then
         
         eval "$(docker-machine env ${DOCKER_MACHINE_NAME})"
         echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DOCKER_GREEN}started${DOCKER_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+
+        _dockerAlias
     }
 
     # -------------------------------------------------------------------------
@@ -102,6 +104,13 @@ if [ -e "$(which docker-machine)" ]; then
 
     # -------------------------------------------------------------------------
 
+    function doshell()
+    {
+        docker exec -ti $1 /bin/bash
+    }
+
+    # -------------------------------------------------------------------------
+
     function dohelp()
     {
         echo -e "${DOCKER_PREFIX} Helper Commands.\n"
@@ -114,6 +123,28 @@ if [ -e "$(which docker-machine)" ]; then
     }
 
     # -------------------------------------------------------------------------
+    # Autocompleter
+
+    if [[ -n $(type -t complete) ]]; then
+        function _completecontainer()
+        {
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$(docker-compose ps | egrep "^[a-z].*" | cut -d" " -f1)" -- "$word") )
+        }
+        complete -F _completecontainer doshell
+
+        function _completemachine()
+        {
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$(docker-machine ls -q)" -- "$word") )   
+        }
+        complete -F _completemachine dostart
+        complete -F _completemachine dostop
+        complete -F _completemachine doconnect
+    fi
+
+    # -------------------------------------------------------------------------
+    # Init
 
     _dockerInit
 fi
