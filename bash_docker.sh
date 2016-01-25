@@ -42,6 +42,19 @@ if [ -e "$(which docker-machine)" ]; then
 
     # -------------------------------------------------------------------------
 
+    function _updateDnsMask()
+    {
+        # Update and restart DnsMask (if present)
+        if [ -f $(brew --prefix)/etc/dnsmasq.conf ]; then
+            if [ egrep "$(docker-machine ip ${DOCKER_MACHINE_NAME})" $(brew --prefix)/etc/dnsmasq.conf >/dev/null ]; then
+                sed -i -e "s|/[0-9.]*$|/$(docker-machine ip ${DOCKER_MACHINE_NAME})|" $(brew --prefix)/etc/dnsmasq.conf
+                sudo launchctl stop homebrew.mxcl.dnsmasq && sudo killall -HUP mDNSResponder && sudo launchctl start homebrew.mxcl.dnsmasq
+            fi
+        fi
+    }
+
+    # -------------------------------------------------------------------------
+
     function dostart()
     {
         _dockerMachineName $1
@@ -65,6 +78,7 @@ if [ -e "$(which docker-machine)" ]; then
             && docker start nginx-proxy \
             || docker run --name=nginx-proxy -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
         
+        _updateDnsMask
         _dockerAlias
     }
 
@@ -99,6 +113,7 @@ if [ -e "$(which docker-machine)" ]; then
                 eval "$(docker-machine env ${DOCKER_MACHINE_NAME})"
                 echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}connected${DN} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
 
+                _updateDnsMask
                 _dockerAlias
             else
                 echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DR}disconnected${DN}\n"
