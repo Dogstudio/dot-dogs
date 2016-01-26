@@ -134,6 +134,14 @@ if [ -e "$(which docker-machine)" ]; then
 
     # -------------------------------------------------------------------------
 
+    function dodb()
+    {
+        DOCKER_MYSQL_PORT=$(docker-compose ps | grep "3306" | head -n 1 | tr -s " " | cut -d " " -f 5 | cut -d ":" -f2 | cut -d "-" -f 1)
+        ssh -i ~/.docker/machine/machines/${DOCKER_MACHINE_NAME}/id_rsa -L 3306:localhost:${DOCKER_MYSQL_PORT} docker@mysql.dok
+    }
+
+    # -------------------------------------------------------------------------
+
     function dohelp()
     {
         echo -e "${DOCKER_PREFIX} Helper Commands.\n"
