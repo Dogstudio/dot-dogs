@@ -46,7 +46,9 @@ if [ -e "$(which docker-machine)" ]; then
     {
         # Update and restart DnsMask (if present)
         if [ -f $(brew --prefix)/etc/dnsmasq.conf ]; then
-            if [ egrep "$(docker-machine ip ${DOCKER_MACHINE_NAME})" $(brew --prefix)/etc/dnsmasq.conf >/dev/null ]; then
+            if ! grep "$(docker-machine ip ${DOCKER_MACHINE_NAME})" $(brew --prefix)/etc/dnsmasq.conf >/dev/null ; then
+                echo -e "${DOCKER_PREFIX} I need ${DB}update DnsMask${DN} to match IP: $(docker-machine ip ${DOCKER_MACHINE_NAME})."
+
                 sed -i -e "s|/[0-9.]*$|/$(docker-machine ip ${DOCKER_MACHINE_NAME})|" $(brew --prefix)/etc/dnsmasq.conf
                 sudo launchctl stop homebrew.mxcl.dnsmasq && sudo killall -HUP mDNSResponder && sudo launchctl start homebrew.mxcl.dnsmasq
             fi
@@ -67,6 +69,9 @@ if [ -e "$(which docker-machine)" ]; then
         docker-machine start ${DOCKER_MACHINE_NAME}
 
         until docker-machine env ${DOCKER_MACHINE_NAME} >/dev/null 2>&1; do
+            if docker-machine env ${DOCKER_MACHINE_NAME} 2>&1 | grep "docker-machine regenerate-certs" >/dev/null; then
+                docker-machine regenerate-certs -f ${DOCKER_MACHINE_NAME}
+            fi
             echo "." ; sleep 1
         done
         
@@ -74,9 +79,11 @@ if [ -e "$(which docker-machine)" ]; then
         echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}started${DN} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
 
         # Check if the container nginx-proxy already exists run <> start
-        docker ps -f label=nginx-proxy -q \
-            && docker start nginx-proxy \
-            || docker run --name=nginx-proxy -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+        if [ $(docker ps -a -f name=nginx-proxy -q) ] ; then
+            docker start nginx-proxy
+        else
+            docker run --name=nginx-proxy -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+        fi
         
         _updateDnsMask
         _dockerAlias
@@ -96,10 +103,10 @@ if [ -e "$(which docker-machine)" ]; then
         docker-machine stop ${DOCKER_MACHINE_NAME}
 
         while docker-machine env ${DOCKER_MACHINE_NAME} >/dev/null 2>&1; do
-            echo "." ; sleep 1
+            echo -n "." ; sleep 1
         done
 
-        echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}stopped${DN}, now\n"
+        echo -e "\n${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}stopped${DN}, now\n"
     }
 
     # -------------------------------------------------------------------------
