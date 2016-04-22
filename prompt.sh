@@ -8,15 +8,15 @@
 # -----------------------------------------------------------------------------
 
 
-RED="\[\033[0;31m\]"
-YELLOW="\[\033[1;33m\]"
-GREEN="\[\033[0;32m\]"
-BLUE="\[\033[1;34m\]"
-LIGHT_RED="\[\033[1;31m\]"
-LIGHT_GREEN="\[\033[1;32m\]"
-WHITE="\[\033[1;37m\]"
-LIGHT_GRAY="\[\033[0;37m\]"
-COLOR_NONE="\[\e[0m\]"
+COLOR_RED="\033[0;31m"
+COLOR_YELLOW="\033[1;33m"
+COLOR_GREEN="\033[0;32m"
+COLOR_BLUE="\033[1;34m"
+COLOR_LIGHT_RED="\033[1;31m"
+COLOR_LIGHT_GREEN="\033[1;32m"
+COLOR_WHITE="\033[1;37m"
+COLOR_LIGHT_GRAY="\033[0;37m"
+COLOR_NONE="\033[0m"
 
 # Detect whether the current directory is a git repository.
 function getGitRepository {
@@ -36,11 +36,11 @@ function getGitBranch {
 
     # Set color based on clean/staged/dirty.
     if [[ ${git_status} =~ "working directory clean" ]]; then
-        state="${GREEN}"
+        state="${COLOR_GREEN}"
     elif [[ ${git_status} =~ "Changes to be committed" ]]; then
-        state="${YELLOW}"
+        state="${COLOR_YELLOW}"
     else
-        state="${LIGHT_RED}"
+        state="${COLOR_LIGHT_RED}"
     fi
 
     # Set arrow icon based on status against remote.
@@ -70,13 +70,13 @@ function getGitBranch {
 function setUserColor {
     USERID=`id -u`
     if (( 0 == "$(id -u)" )); then
-        USERNAME="${LIGHT_RED}"
+        USERNAME="${COLOR_LIGHT_RED}"
 
     elif [[ "$(logname 2>/dev/null)" != "$(id -u -n)" ]]; then
-        USERNAME="${LIGHT_GRAY}"
+        USERNAME="${COLOR_LIGHT_GRAY}"
 
     else
-        USERNAME="${BLUE}"
+        USERNAME="${COLOR_BLUE}"
     fi
 }
 

@@ -7,16 +7,14 @@
 #
 # -----------------------------------------------------------------------------
 
+#
+#   Complete connexion name based on SSH config
+#
 if [[ -n $(type -t complete) ]]; then
-    
-    #
-    #   Complete connexion name based on SSH config
-    #
-    _complete() {
+    ssh_complete() {
         local word="${COMP_WORDS[COMP_CWORD]}"
-
         COMPREPLY=( $(compgen -W "$(egrep 'Host\ .*' ~/.ssh/config | cut -f2 -d ' ')" -- "$word") )
     }
 
-    complete -F _complete ssh
+    complete -F ssh_complete ssh
 fi

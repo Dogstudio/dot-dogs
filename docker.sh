@@ -1,9 +1,21 @@
 #!/bin/bash
+#
+#   Docker aliases and commands
+#
+# -----------------------------------------------------------------------------
+
 export DOCKER_PREFIX="\033[4mDOCKER\033[0m -"
-export DR="\033[0;31m"
-export DG="\033[0;32m"
-export DB="\033[1;34m"
-export DN="\033[0m"
+
+
+COLOR_RED="\033[0;31m"
+COLOR_YELLOW="\033[1;33m"
+COLOR_GREEN="\033[0;32m"
+COLOR_BLUE="\033[1;34m"
+COLOR_LIGHT_RED="\033[1;31m"
+COLOR_LIGHT_GREEN="\033[1;32m"
+COLOR_WHITE="\033[1;37m"
+COLOR_LIGHT_GRAY="\033[0;37m"
+COLOR_NONE="\033[0m"
 
 if [ -e "$(which docker-machine)" ]; then	
 
@@ -30,26 +42,26 @@ if [ -e "$(which docker-machine)" ]; then
         _dockerMachineName $1
 
         if [ "Running" != $(docker-machine status ${DOCKER_MACHINE_NAME}) ]; then
-            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DR}not running${DN}\n"
+            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_RED}not running${COLOR_NONE}\n"
             return 1
         fi
   
         eval $(docker-machine env $DOCKER_MACHINE_NAME) && 
-        echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}running${DN} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+        echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_GREEN}running${COLOR_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
 
         _dockerAlias
     }
 
     # -------------------------------------------------------------------------
 
+    # Update and restart DnsMask (if present)
     function _updateDnsMask()
     {
-        # Update and restart DnsMask (if present)
         if [ -f $(brew --prefix)/etc/dnsmasq.conf ]; then
             if ! grep "$(docker-machine ip ${DOCKER_MACHINE_NAME})" $(brew --prefix)/etc/dnsmasq.conf >/dev/null ; then
-                echo -e "${DOCKER_PREFIX} I need ${DB}update DnsMask${DN} to match IP: $(docker-machine ip ${DOCKER_MACHINE_NAME})."
+                echo -e "${DOCKER_PREFIX} I need ${COLOR_BLUE}update DnsMask${COLOR_NONE} to match IP: $(docker-machine ip ${DOCKER_MACHINE_NAME})."
 
-                sed -i -e "s|/[0-9.]*$|/$(docker-machine ip ${DOCKER_MACHINE_NAME})|" $(brew --prefix)/etc/dnsmasq.conf
+                sed -i -e "s|dok/[0-9.]*$|dok/$(docker-machine ip ${DOCKER_MACHINE_NAME})|" $(brew --prefix)/etc/dnsmasq.conf
                 sudo launchctl stop homebrew.mxcl.dnsmasq && sudo killall -HUP mDNSResponder && sudo launchctl start homebrew.mxcl.dnsmasq
             fi
         fi
@@ -62,27 +74,33 @@ if [ -e "$(which docker-machine)" ]; then
         _dockerMachineName $1
 
         if [ "Running" = $(docker-machine status ${DOCKER_MACHINE_NAME}) ]; then
-            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}already running${DN}  with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_GREEN}already running${COLOR_NONE}  with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
             return 1
         fi
       
         docker-machine start ${DOCKER_MACHINE_NAME}
 
         until docker-machine env ${DOCKER_MACHINE_NAME} >/dev/null 2>&1; do
+            echo "." ; sleep 2
+
             if docker-machine env ${DOCKER_MACHINE_NAME} 2>&1 | grep "docker-machine regenerate-certs" >/dev/null; then
                 docker-machine regenerate-certs -f ${DOCKER_MACHINE_NAME}
             fi
-            echo "." ; sleep 1
         done
         
         eval "$(docker-machine env ${DOCKER_MACHINE_NAME})"
-        echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}started${DN} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+        echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_GREEN}started${COLOR_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
 
         # Check if the container nginx-proxy already exists run <> start
         if [ $(docker ps -a -f name=nginx-proxy -q) ] ; then
             docker start nginx-proxy
         else
-            docker run --name=nginx-proxy -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+            DOCKER_NGINX_EXTRAS="$(pwd)/docker_nginx_extras.conf"
+            if [ ! -e $DOCKER_NGINX_EXTRAS ]; then 
+                echo -e "# NginX Custom Config\nclient_max_body_size 10m;" > ${DOCKER_NGINX_EXTRAS}
+            fi
+
+            docker run --name=nginx-proxy -d -p 80:80 -v ${DOCKER_NGINX_EXTRAS}:/etc/nginx/conf.d/extras.conf -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
         fi
         
         _updateDnsMask
@@ -96,7 +114,7 @@ if [ -e "$(which docker-machine)" ]; then
         _dockerMachineName $1
 
         if [ "Running" != $(docker-machine status ${DOCKER_MACHINE_NAME}) ]; then
-            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}already stopped${DN}\n"
+            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_GREEN}already stopped${COLOR_NONE}\n"
             return 1
         fi
 
@@ -106,7 +124,7 @@ if [ -e "$(which docker-machine)" ]; then
             echo -n "." ; sleep 1
         done
 
-        echo -e "\n${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}stopped${DN}, now\n"
+        echo -e "\n${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_GREEN}stopped${COLOR_NONE}, now\n"
     }
 
     # -------------------------------------------------------------------------
@@ -118,15 +136,15 @@ if [ -e "$(which docker-machine)" ]; then
         if [ "Running" = $(docker-machine status ${DOCKER_MACHINE_NAME}) ]; then
             if $(docker-machine env ${DOCKER_MACHINE_NAME} >/dev/null 2>&1) ; then
                 eval "$(docker-machine env ${DOCKER_MACHINE_NAME})"
-                echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DG}connected${DN} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
+                echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_GREEN}connected${COLOR_NONE} with IP : $(docker-machine ip ${DOCKER_MACHINE_NAME})\n"
 
                 _updateDnsMask
                 _dockerAlias
             else
-                echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DR}disconnected${DN}\n"
+                echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_RED}disconnected${COLOR_NONE}\n"
             fi
         else
-            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${DR}stopped${DN}\n"
+            echo -e "${DOCKER_PREFIX} Machine ${DOCKER_MACHINE_NAME} is ${COLOR_RED}stopped${COLOR_NONE}\n"
         fi
     }
 
@@ -152,12 +170,12 @@ if [ -e "$(which docker-machine)" ]; then
     function dohelp()
     {
         echo -e "${DOCKER_PREFIX} Helper Commands.\n"
-        echo -e "  ${DB}dostart${DN} : Detect and start a Docker VM."
-        echo -e "  ${DB}dostop${DN} : Stop the connected Docker VM."
-        echo -e "  ${DB}doconnect${DN} : Set Docker environnement for your shell."
-        echo -e "  ${DB}doup${DN} : Build and Up the current Docker compose."
-        echo -e "  ${DB}dodown${DN} : Down the current Docker compose."
-        echo -e "  ${DB}dologs${DN} : Start the Logging system for the current Docker compose."
+        echo -e "  ${COLOR_BLUE}dostart${COLOR_NONE} : Detect and start a Docker VM."
+        echo -e "  ${COLOR_BLUE}dostop${COLOR_NONE} : Stop the connected Docker VM."
+        echo -e "  ${COLOR_BLUE}doconnect${COLOR_NONE} : Set Docker environnement for your shell."
+        echo -e "  ${COLOR_BLUE}doup${COLOR_NONE} : Build and Up the current Docker compose."
+        echo -e "  ${COLOR_BLUE}dodown${COLOR_NONE} : Down the current Docker compose."
+        echo -e "  ${COLOR_BLUE}dologs${COLOR_NONE} : Start the Logging system for the current Docker compose."
     }
 
     # -------------------------------------------------------------------------

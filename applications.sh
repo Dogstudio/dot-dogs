@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 #
-#   Open (file|dir|project) in Sublime
+#   Application shortcuts and extras
 #
 #   Author: Thierry 'Epagneul' Lagasse <epagneul@dogstudio.be>
-#   Since: Apr 2015
+#   Since: Apr 2016
 #
 # -----------------------------------------------------------------------------
 
+# SUBLIME TEXT - Open (file|dir|project) in Sublime
 if [[ -n $(which subl) ]]; then 
 
-    #
-    #   Add autodetection on Sublimetext opener
-    #
     function openSublime() {
         SUBL_FILE=$@
         SUBL_CMD=$(which subl)
@@ -44,6 +42,22 @@ if [[ -n $(which subl) ]]; then
     #   Alias
     #
     alias subl='openSublime'
+    export EDITOR='/usr/local/bin/subl -w'
 fi
 
-export EDITOR='/usr/local/bin/subl -w'
+# -----------------------------------------------------------------------------
+
+# PhpStorm
+if [[ -n $(which pstorm) ]]; then 
+    alias storm='pstorm ./'
+fi
+
+# -----------------------------------------------------------------------------
+
+# Dash Opener
+if [ -d "/Applications/Dash.app/" ]; then 
+    function openDash() {
+        open dash://$1
+    }
+    alias dash='openDash'
+fi
