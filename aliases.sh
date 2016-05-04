@@ -16,6 +16,7 @@ alias egrep='egrep --color=auto'
 alias l='clear; ls -lAh'
 alias duh='du -hs'
 alias tree="find . | sed 's/[^/]*\//|   /g;s/| *\([^| ]\)/+--- \1/'"
+alias lssh='egrep "Host\ .*" ~/.ssh/config | cut -f2 -d " "'
 alias wget="wget -c"
 
 alias mkdir="mkdir -p"
@@ -29,6 +30,6 @@ alias phpserv='php -S 0.0.0.0:8080 -t ./'
 # -----------------------------------------------------------------------------
 
 # Where my site is hosted ?
-function hosted() {
-    dig +short -x $(dig +short $1)
+function hostedon() {
+    IP_LIST=$(dig +short $1) ; [ -n "$IP_LIST" ] && dig +short -x $IP_LIST
 }
