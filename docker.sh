@@ -152,17 +152,22 @@ if [ -e "$(which docker-machine)" ]; then
 
     function doshell()
     {
-        _dockerMachineName $1
-
-        docker exec -ti ${DOCKER_MACHINE_NAME} /bin/bash
+        docker exec -ti $1 /bin/bash
     }
 
     # -------------------------------------------------------------------------
 
     function dodb()
     {
-        DOCKER_MYSQL_PORT=$(docker-compose ps | grep "3306" | head -n 1 | tr -s " " | cut -d " " -f 5 | cut -d ":" -f2 | cut -d "-" -f 1)
-        ssh -i ~/.docker/machine/machines/${DOCKER_MACHINE_NAME}/id_rsa -L 3306:localhost:${DOCKER_MYSQL_PORT} docker@mysql.dok
+        if [ "$1" == "-t" ]; then
+            DOCKER_MYSQL_PORT=$(docker ps --filter status=running --format "{{.Ports}}" --filter name="$2" | awk -F'[:-]' '/3306/{ print $2 ; exit }')
+            ssh -i ~/.docker/machine/machines/${DOCKER_MACHINE_NAME}/id_rsa -L 3306:localhost:${DOCKER_MYSQL_PORT} docker@mysql.dok
+
+        else
+            DOCKER_MYSQL_PORT=$(docker ps --filter status=running --format "{{.Ports}}" --filter name="$2" | awk -F'[:-]' '/3306/{ print $2 ; exit }')
+            echo "The Port is : $DOCKER_MYSQL_PORT"
+            which pbcopy2 2>&1 >/dev/null && (echo $DOCKER_MYSQL_PORT | pbcopy)
+        fi
     }
 
     # -------------------------------------------------------------------------
@@ -175,6 +180,8 @@ if [ -e "$(which docker-machine)" ]; then
         echo -e "  ${COLOR_BLUE}doconnect${COLOR_NONE} : Set Docker environnement for your shell."
         echo -e "  ${COLOR_BLUE}doup${COLOR_NONE} : Build and Up the current Docker compose."
         echo -e "  ${COLOR_BLUE}dodown${COLOR_NONE} : Down the current Docker compose."
+        echo -e "  ${COLOR_BLUE}doshell${COLOR_NONE} : Open shell on specified container."
+        echo -e "  ${COLOR_BLUE}dodb [-t]${COLOR_NONE} : Open tunnel to DB or at least get the forwarded port."
         echo -e "  ${COLOR_BLUE}dologs${COLOR_NONE} : Start the Logging system for the current Docker compose."
     }
 
@@ -182,10 +189,11 @@ if [ -e "$(which docker-machine)" ]; then
     # Autocompleter
 
     if $(type complete >/dev/null); then
+
         function _completecontainer()
         {
             local word="${COMP_WORDS[COMP_CWORD]}"
-            COMPREPLY=( $(compgen -W "$(docker-compose ps | egrep "^[a-z].*" | cut -d" " -f1)" -- "$word") )
+            COMPREPLY=( $(compgen -W "$(docker ps --filter status=running --format "{{.Names}}")" -- "$word") )
         }
         complete -F _completecontainer doshell
 
@@ -197,6 +205,14 @@ if [ -e "$(which docker-machine)" ]; then
         complete -F _completemachine dostart
         complete -F _completemachine dostop
         complete -F _completemachine doconnect
+
+        function _completedb()
+        {
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$(docker ps --filter status=running --format "{{.Names}} {{.Ports}}" | awk '/3306/{print $1}')" -- "$word") )
+        }
+        complete -F _completedb dodb
+
     fi
 
     # -------------------------------------------------------------------------
