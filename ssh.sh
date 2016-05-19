@@ -17,4 +17,5 @@ if [[ -n $(type -t complete) ]]; then
     }
 
     complete -F ssh_complete ssh
+    complete -F ssh_complete scp
 fi
