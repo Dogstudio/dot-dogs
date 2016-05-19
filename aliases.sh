@@ -27,6 +27,8 @@ alias .....='cd ../../../../'
 
 alias phpserv='php -S 0.0.0.0:8080 -t ./'
 
+alias cpkey='cat ${HOME}/.ssh/*.pub | pbcopy'
+
 # -----------------------------------------------------------------------------
 
 # Where my site is hosted ?
