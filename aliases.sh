@@ -29,6 +29,15 @@ alias phpserv='php -S 0.0.0.0:8080 -t ./'
 
 alias cpkey='cat ${HOME}/.ssh/*.pub | pbcopy'
 
+# GIT
+alias gad='git add'
+alias gco='git checkout'
+alias gcm='git commit'
+alias gpl='git pull'
+alias gps='git push'
+alias glo='git log'
+alias gst='git status'
+
 # -----------------------------------------------------------------------------
 
 # Where my site is hosted ?
