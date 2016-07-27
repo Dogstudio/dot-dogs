@@ -13,7 +13,7 @@
 if [[ -n $(type -t complete) ]]; then
     ssh_complete() {
         local word="${COMP_WORDS[COMP_CWORD]}"
-        COMPREPLY=( $(compgen -W "$(egrep 'Host\ .*' ~/.ssh/config | cut -f2 -d ' ')" -- "$word") )
+        COMPREPLY=( $(compgen -W "$(awk '/^Host/{for(i=1;++i <= NF;) print $i}' ~/.ssh/config)" -- "$word") )
     }
 
     complete -F ssh_complete ssh
