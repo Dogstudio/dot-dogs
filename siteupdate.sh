@@ -11,7 +11,7 @@ function site-update {
     if [[ -n "${GIT_BRANCH}" && -n "${GIT_REMOTE}" ]]; then
         git pull --ff-only $GIT_REMOTE $GIT_BRANCH
     else
-        echo "Not git directory"
+        echo "Not a git directory"
     fi
 }
 alias siteupdate='site-update'

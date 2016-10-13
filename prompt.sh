@@ -16,6 +16,7 @@ COLOR_LIGHT_RED="\033[1;31m"
 COLOR_LIGHT_GREEN="\033[1;32m"
 COLOR_WHITE="\033[1;37m"
 COLOR_LIGHT_GRAY="\033[0;37m"
+COLOR_DARK_GRAY="\033[1;30m"
 COLOR_NONE="\033[0m"
 
 # Detect whether the current directory is a git repository.
@@ -100,7 +101,7 @@ function setBashPrompt {
     setUserColor
     setConnection
 
-    PS1="\n${USERNAME}${SESSION}${COLOR_NONE}\w${BRANCH}${COLOR_NONE}\n➜ "
+    PS1="\n${USERNAME}${SESSION}${COLOR_DARK_GRAY}\w${BRANCH}${COLOR_NONE}\n${COLOR_DARK_GRAY}➜${COLOR_NONE} "
 }
 
 PROMPT_COMMAND=setBashPrompt
