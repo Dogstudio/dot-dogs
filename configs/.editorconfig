@@ -18,7 +18,11 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = false
 
-[*.{js,css,sass,less}]
+[*.{html,twig,nunjucks}]
+indent_style = space
+indent_size = 2
+
+[*.{js,css,sass,less,scss}]
 indent_style = space
 indent_size = 2
 
