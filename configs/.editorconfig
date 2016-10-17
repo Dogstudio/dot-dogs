@@ -1,0 +1,31 @@
+#
+# http://editorconfig.org/
+#
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+indent_size = 4
+
+[makefile]
+indent_style = tab
+
+[*.{md,markdown}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+
+[*.{js,css,sass,less}]
+indent_style = space
+indent_size = 2
+
+[*.{json,yml}]
+indent_style = space
+indent_size = 2
+
+[*.go]
+indent_style = tab
+indent_size = 4

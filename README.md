@@ -15,9 +15,9 @@ Ajoute des "alias" de commandes tels que :
 * `..` : remonte d'un répertoire (`cd ..`)
 * `...` : remonte de deux répertoires (`cd ../..`)
 
-La **fonction** `hosted` permet de récupérer le nom du serveur qui héberge un site : 
+La **fonction** `hostedon` permet de récupérer le nom du serveur qui héberge un site : 
 
-    $ hosted www.dogstudio.be
+    $ hostedon www.dogstudio.be
     dogstudio05.cblue.be.
 
 ### Prompt
@@ -78,6 +78,13 @@ Si vous exécutez la commande sans paramètre, détecte la présence d'un fichie
 
 ---
 
+## Les configurations
+
+Les fichiers présents dans `configs` sont à placer dans votre répertoire _home_ et permettent une configuration globale :
+
+* `.editorconfig` : pour votre editeur ou ide
+* `.gitignore_global` : pour que GIT ignore certains fichiers de manière global.
+
 ## Installation des scripts
 
 Il faut télécharger les scripts et les placer dans un répertoire de votre choix (ex: `~/.scripts`)
@@ -90,8 +97,6 @@ Ensuite vous devez les ajouter à votre fichier `.bashrc`.
     source ~/.scripts/all.sh
 
 _Le script `all.sh` permet d'inclure tous les scripts d'un coup._
-
-Pour utiliser ces scripts, vous avez plusieurs possibilités.
 
 ## Mise à jour
 

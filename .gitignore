@@ -1,7 +1,0 @@
-# OSX
-.DS_Store
-._*
-
-# PhpStorm
-.idea
-*.sublime-*
