@@ -101,7 +101,7 @@ function setBashPrompt {
     setUserColor
     setConnection
 
-    PS1="\n${USERNAME}${SESSION}${COLOR_NONE}\w${BRANCH}${COLOR_NONE}\n➜ "
+    PS1="\n${USERNAME}${SESSION}${COLOR_DARK_GRAY}\w${COLOR_NONE}${BRANCH}${COLOR_NONE}\n➜ "
 }
 
 PROMPT_COMMAND=setBashPrompt
