@@ -61,10 +61,11 @@ function _dockerAlias()
 
     alias doup="docker-compose build && docker-compose up -d --remove-orphans"
     alias dodown="docker-compose down --remove-orphans"
+    alias dorestart="dodown && doup"
     alias doreload="dodown && doup"
     alias dologs="docker-compose logs"
 
-    alias doall="docker-compose down -v --remove-orphans -rmi all && docker-compose rm && docker-compose build --no-cache --force-rm && docker-compose up -d"
+    alias doall="docker-compose down && docker-compose rm && docker-compose build --no-cache --force-rm && docker-compose up -d"
 }
 
 # -------------------------------------------------------------------------
