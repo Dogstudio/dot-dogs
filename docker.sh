@@ -60,11 +60,10 @@ function _dockerAlias()
     alias doco="docker-compose"
 
     alias doup="docker-compose build && docker-compose up -d --remove-orphans"
-    alias dodown="docker-compose down --remove-orphans"
-    alias dorestart="dodown && doup"
+    alias dodown="docker-compose stop"
     alias doreload="dodown && doup"
     alias dologs="docker-compose logs"
-
+    alias dostop='docker stop $(docker ps -q)'
     alias doall="docker-compose down && docker-compose rm && docker-compose build --no-cache --force-rm && docker-compose up -d"
 }
 

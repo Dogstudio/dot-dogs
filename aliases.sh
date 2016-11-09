@@ -27,8 +27,6 @@ alias .....='cd ../../../../'
 
 alias phpserv='php -S 0.0.0.0:8080 -t ./'
 
-alias cpkey='cat ${HOME}/.ssh/*.pub | pbcopy'
-
 # GIT
 alias gad='git add'
 alias gco='git checkout'
@@ -37,6 +35,11 @@ alias gpl='git pull'
 alias gps='git push'
 alias glo='git log'
 alias gst='git status'
+
+# Bark
+alias bark='barkgo'
+alias brk='barkgo'
+alias b='barkgo'
 
 # -----------------------------------------------------------------------------
 

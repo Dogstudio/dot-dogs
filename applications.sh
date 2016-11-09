@@ -54,6 +54,18 @@ fi
 
 # -----------------------------------------------------------------------------
 
+# Tower
+if [[ -n $(which gittower) ]]; then 
+    function tower() {
+        gittower ${1:-./}    
+    }
+
+    alias twr='tower'
+fi
+
+
+# -----------------------------------------------------------------------------
+
 # Dash Opener
 if [ -d "/Applications/Dash.app/" ]; then 
     function openDash() {

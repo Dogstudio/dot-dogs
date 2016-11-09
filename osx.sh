@@ -3,6 +3,14 @@
 #   Tools and functions for OSX Application
 #
 
+# Copy current path in the clipboard
+function copypath() {
+    echo "$(pwd)/" | pbcopy
+}
+alias cpath='copypath'
+alias cpt='copypath'
+
+
 #  GNU command for OSX (via Homebrew) : brew install coreutils
 if [[ -d "/usr/local/opt/coreutils/" ]]; then
     #export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
