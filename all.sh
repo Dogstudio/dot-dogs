@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-source prompt.sh
-source aliases.sh
-source ssh.sh
+EXTRA_SCRIPT_FOLDER=$(dirname "${BASH_SOURCE[0]}")
 
-source applications.sh
-source osx.sh
-source vagrant.sh
-source docker.sh
+source ${EXTRA_SCRIPT_FOLDER}/prompt.sh
+source ${EXTRA_SCRIPT_FOLDER}/aliases.sh
+source ${EXTRA_SCRIPT_FOLDER}/ssh.sh
+
+source ${EXTRA_SCRIPT_FOLDER}/applications.sh
+source ${EXTRA_SCRIPT_FOLDER}/osx.sh
+source ${EXTRA_SCRIPT_FOLDER}/vagrant.sh
+source ${EXTRA_SCRIPT_FOLDER}/docker.sh
