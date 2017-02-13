@@ -9,4 +9,4 @@ read -p "What's your dogname: " DOG;
 NEWDOG=`php -r "echo ucfirst(strtolower('$DOG'));"`
 
 sudo -p "Now, enter your connection password (it will not sent or copied, I promise): " scutil --set ComputerName "$NEWDOG" && sudo scutil --set LocalHostName "$NEWDOG" && sudo scutil --set HostName "$NEWDOG" &&\
-echo -e "\Done. You can quit the Terminal, now." || echo -e "\nOups, something went Wrong..."
+echo -e "\nDone. You can quit the Terminal, now." || echo -e "\nOups, something went Wrong..."
