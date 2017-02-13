@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Update the machine name
+#
 clear
 echo -e "I'll update your MAC configuration to set your Dogname as Computer...\n"
 
