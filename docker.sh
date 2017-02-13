@@ -71,11 +71,11 @@ function _dockerAlias()
 
 function _dockerInit()
 {
-    if ! docker info 2>&1 >/dev/null ; then
+    if ! docker info 2>/dev/null >/dev/null ; then
         echo -e "${DOCKER_PREFIX} Local deamon is ${COLOR_RED}not running${COLOR_NONE}\n"; return 1
     fi
 
-    DOCKER_MACHINE_NAME=$(docker info |awk -F':' '/Name/ {print $2}' | tr -d ' ')
+    DOCKER_MACHINE_NAME=$(docker info 2>/dev/null | awk -F':' '/Name/ {print $2}' | tr -d ' ')
     echo -e "${DOCKER_PREFIX} Local deamon \"${DOCKER_MACHINE_NAME}\" is ${COLOR_GREEN}running${COLOR_NONE}.\n"
 
     _dockerAlias
