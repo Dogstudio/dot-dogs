@@ -130,13 +130,13 @@ function dohelp()
 # Autocompleter
 
 if $(type complete >/dev/null); then
-    function _completeshell()
+    function _completecontainer()
     {
         local word="${COMP_WORDS[COMP_CWORD]}"
         COMPREPLY=( $(compgen -W "$(docker ps --filter status=running --format "{{.Names}}")" -- "$word") )
     }
-    complete -F _completeshell doshell
-
+    complete -F _completecontainer doshell
+	complete -F _completecontainer dologs
 fi
 
 # -------------------------------------------------------------------------
