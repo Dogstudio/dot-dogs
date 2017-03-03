@@ -172,19 +172,23 @@ function _dockerCompleter()
                     dostop)
                         COMPREPLY=( $(compgen -W "$(docker-machine ls -q --filter "state=Running")" -- "$word") )
                         ;;
-                    doco)
-                        COMPREPLY=( $(compgen -W "build bundle config create down events exec help kill logs pause port ps pull push restart rm run scale start stop unpause up version" -- "$word") )
-                        ;;                       
                     *)
                         COMPREPLY=( $(compgen -W "active config create env inspect ip kill ls provision restart rm ssh scp start status stop upgrade url version help regenerate-certs" -- "$word") )
                         ;;
                 esac
             }
-            complete -d -f -F _completeDockerMachine doma
+            complete -d -f -W "build bundle config create down events exec help kill logs pause port ps pull push restart rm run scale start stop unpause up version" doma
             complete -d -f -F _completeDockerMachine docker-machine
             complete -F _completeDockerMachine dostart 
             complete -F _completeDockerMachine dostop 
         fi
+
+        # Other commands
+        local COMPLETE_DOCO="build bundle config create down events exec help kill logs pause port ps pull push restart rm run scale start stop unpause up version"
+        complete -W "$COMPLETE_DOCO" docker-compose
+        complete -W "$COMPLETE_DOCO" doco
+
+        complete -W "doma doco dostop dostart dohelp dologs" dohelp
     fi
 }
 
@@ -266,7 +270,6 @@ function dohelp()
             echo -e "${COLOR_WHITE}dologs${COLOR_NONE} start the Logging system for the current Docker compose."
             echo -e "You can use completion to limit the logs to one of the current running services."
         ;;
-        dohelp)
         *)
             echo -e "${DOCKER_PREFIX} Helper Commands."
             echo ''
@@ -281,8 +284,6 @@ function dohelp()
             echo -e "  ${COLOR_BLUE}dologs${COLOR_NONE}:   Start the Logging system for the current Docker compose."
             ;;
     esac
-
-    type complete >/dev/null && complete -W "doma doco dostop dostart dohelp" dohelp
 }
 
 # -------------------------------------------------------------------------------------------------
