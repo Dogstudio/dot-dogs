@@ -47,17 +47,24 @@ fi
 
 # -----------------------------------------------------------------------------
 
-# PhpStorm
+# PhpStorm Opener
 if [[ -n $(which pstorm) ]]; then 
     alias storm='pstorm ./'
 fi
 
 # -----------------------------------------------------------------------------
 
-# Tower
+# Tower Opener
 if [[ -n $(which gittower) ]]; then 
     function tower() {
-        gittower ${1:-./}    
+        LDIR=$(git rev-parse --show-toplevel 2>/dev/null)
+
+        if [ -z "$LDIR" ]; then
+            LDIR=$(pwd)
+            while [[ ! -f "$LDIR/.git" && "$LDIR" != '/' ]]; do LDIR=$(dirname $LDIR); done;
+        fi
+        
+        gittower ${1:-$LDIR}    
     }
 
     alias twr='tower'
