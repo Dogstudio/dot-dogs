@@ -70,6 +70,10 @@ function _dockerInit()
         fi
 
         if ! docker-machine env 2>&1 >/dev/null; then 
+            docker-machine regenerate-certs -f ${DOCKER_MACHINE_NAME}
+        fi
+
+        if ! docker-machine env 2>&1 >/dev/null; then 
             echo -e "${DOCKER_PREFIX} The \"${DOCKER_MACHINE_NAME}\" ${COLOR_RED}has no ENV${COLOR_NONE}"; return 1
         fi
 
@@ -85,6 +89,11 @@ function _dockerInit()
     
     # None is running
     else
+        unset DOCKER_TLS_VERIFY
+        unset DOCKER_CERT_PATH
+        unset DOCKER_MACHINE_NAME
+        unset DOCKER_HOST
+        
         echo -e "${DOCKER_PREFIX} Docker ${COLOR_RED} is not running${COLOR_NONE}"; return 1
     fi
 
@@ -140,7 +149,14 @@ function _dockerCompleter()
             COMPREPLY=( $(compgen -W "$(docker ps --filter "status=running" --format "{{.Names}}")" -- "$word") )
         }
         complete -F _completeContainer doshell
-        complete -F _completeContainer dologs
+
+        # Search for Services
+        function _completeServices()
+        {
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$(docker ps --filter "status=running" --format "{{.Names}}" | cut -d'_' -f 2)" -- "$word") )
+        }
+        complete -F _completeServices dologs
 
         # Docker machine
         if [ -n "$(command -v docker-machine)" ]; then
@@ -161,8 +177,8 @@ function _dockerCompleter()
                         ;;
                 esac
             }
-            complete -F _completeDockerMachine doma
-            complete -F _completeDockerMachine docker-machine
+            complete -d -f -F _completeDockerMachine doma
+            complete -d -f -F _completeDockerMachine docker-machine
             complete -F _completeDockerMachine dostart 
             complete -F _completeDockerMachine dostop 
         fi
@@ -199,7 +215,12 @@ function dostart()
 # Stop a machine
 function dostop()
 {
-    docker-machine stop $1 && _dockerInit
+    docker-machine stop $1 && \
+    unset DOCKER_TLS_VERIFY && \
+    unset DOCKER_CERT_PATH && \
+    unset DOCKER_MACHINE_NAME && \
+    unset DOCKER_HOST && \
+    _dockerInit
 }
 
 
