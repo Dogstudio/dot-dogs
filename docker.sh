@@ -167,11 +167,14 @@ function _dockerCompleter()
 
                 case "$cmd" in
                     dostart)
-                       COMPREPLY=( $(compgen -W "$(docker-machine ls -q --filter "state=Stopped")" -- "$word") )
-                       ;;
+                        COMPREPLY=( $(compgen -W "$(docker-machine ls -q --filter "state=Stopped")" -- "$word") )
+                        ;;
                     dostop)
-                       COMPREPLY=( $(compgen -W "$(docker-machine ls -q --filter "state=Running")" -- "$word") )
-                       ;;
+                        COMPREPLY=( $(compgen -W "$(docker-machine ls -q --filter "state=Running")" -- "$word") )
+                        ;;
+                    doco)
+                        COMPREPLY=( $(compgen -W "build bundle config create down events exec help kill logs pause port ps pull push restart rm run scale start stop unpause up version" -- "$word") )
+                        ;;                       
                     *)
                         COMPREPLY=( $(compgen -W "active config create env inspect ip kill ls provision restart rm ssh scp start status stop upgrade url version help regenerate-certs" -- "$word") )
                         ;;
@@ -232,17 +235,54 @@ function doshell()
 
 function dohelp()
 {
-    echo -e "${DOCKER_PREFIX} Helper Commands."
-    echo ''
-    echo -e "  ${COLOR_WHITE}doma${COLOR_NONE}:     Simple alias for docker-machine."
-    echo -e "  ${COLOR_WHITE}doco${COLOR_NONE}:     Simple alias for docker-compose."
-    echo -e "  ${COLOR_WHITE}doinit${COLOR_NONE}:   Initialize the session according the Docker ENV."
-    echo ''
-    echo -e "  ${COLOR_BLUE}doup${COLOR_NONE}:     Build and Up the current Docker compose."
-    echo -e "  ${COLOR_BLUE}dodown${COLOR_NONE}:   Down the current Docker compose."
-    echo -e "  ${COLOR_BLUE}doreload${COLOR_NONE}: Down and up the current Docker compose."
-    echo -e "  ${COLOR_BLUE}doshell${COLOR_NONE}:  Open shell on specified container (autocomplete)."
-    echo -e "  ${COLOR_BLUE}dologs${COLOR_NONE}:   Start the Logging system for the current Docker compose."
+    case "$1" in
+        doma)
+            echo -e "${DOCKER_PREFIX} Help for command ${COLOR_WHITE}doma${COLOR_NONE}."
+            echo ''
+            echo -e "${COLOR_WHITE}doma${COLOR_NONE} is simple alias for docker-machine."
+            echo -e "You can use completion to get sub command of docker-machine."
+        ;;
+        doco)
+            echo -e "${DOCKER_PREFIX} Help for command ${COLOR_WHITE}doco${COLOR_NONE}."
+            echo ''
+            echo -e "${COLOR_WHITE}doco${COLOR_NONE} is simple alias for docker-compose."
+            echo -e "You can use completion to get sub command of docker-machine."
+        ;;
+        dostop)
+            echo -e "${DOCKER_PREFIX} Help for command ${COLOR_WHITE}dostop${COLOR_NONE}."
+            echo ''
+            echo -e "${COLOR_WHITE}dostop${COLOR_NONE} is used to stop the running machine."
+            echo -e "You can use completion to get the running machine name."
+        ;;
+        dostart)
+            echo -e "${DOCKER_PREFIX} Help for command ${COLOR_WHITE}dostart${COLOR_NONE}."
+            echo ''
+            echo -e "${COLOR_WHITE}dostart${COLOR_NONE} can start a non-running machine and set the environment."
+            echo -e "You can use completion to get the startable machine."
+        ;;
+        dologs)
+            echo -e "${DOCKER_PREFIX} Help for command ${COLOR_WHITE}dologs${COLOR_NONE}."
+            echo ''
+            echo -e "${COLOR_WHITE}dologs${COLOR_NONE} start the Logging system for the current Docker compose."
+            echo -e "You can use completion to limit the logs to one of the current running services."
+        ;;
+        dohelp)
+        *)
+            echo -e "${DOCKER_PREFIX} Helper Commands."
+            echo ''
+            echo -e "  ${COLOR_WHITE}doma${COLOR_NONE}:     Simple alias for docker-machine."
+            echo -e "  ${COLOR_WHITE}doco${COLOR_NONE}:     Simple alias for docker-compose."
+            echo -e "  ${COLOR_WHITE}doinit${COLOR_NONE}:   Initialize the session according the Docker ENV."
+            echo ''
+            echo -e "  ${COLOR_BLUE}doup${COLOR_NONE}:     Build and Up the current Docker compose."
+            echo -e "  ${COLOR_BLUE}dodown${COLOR_NONE}:   Down the current Docker compose."
+            echo -e "  ${COLOR_BLUE}doreload${COLOR_NONE}: Down and up the current Docker compose."
+            echo -e "  ${COLOR_BLUE}doshell${COLOR_NONE}:  Open shell on specified container (autocomplete)."
+            echo -e "  ${COLOR_BLUE}dologs${COLOR_NONE}:   Start the Logging system for the current Docker compose."
+            ;;
+    esac
+
+    type complete >/dev/null && complete -W "doma doco dostop dostart dohelp" dohelp
 }
 
 # -------------------------------------------------------------------------------------------------
