@@ -177,7 +177,7 @@ function _dockerCompleter()
                         ;;
                 esac
             }
-            complete -d -f -W "build bundle config create down events exec help kill logs pause port ps pull push restart rm run scale start stop unpause up version" doma
+            complete -d -f -W "active config create env inspect ip kill ls provision restart rm ssh scp start status stop upgrade url version help regenerate-certs" doma
             complete -d -f -F _completeDockerMachine docker-machine
             complete -F _completeDockerMachine dostart 
             complete -F _completeDockerMachine dostop 
