@@ -45,5 +45,6 @@ alias b='barkgo'
 
 # Where my site is hosted ?
 function hostedon() {
-    IP_LIST=$(dig +short $1) ; [ -n "$IP_LIST" ] && dig +short -x $IP_LIST
+    IP_LIST=$(dig +short $1) ; 
+    [ -n "$IP_LIST" ] && dig +short -x $IP_LIST || echo 'Not found'
 }
