@@ -90,7 +90,7 @@ Les fichiers présents dans `configs` sont à placer dans votre répertoire _hom
 Il faut télécharger les scripts et les placer dans un répertoire de votre choix (ex: `~/.scripts`)
 ou de cloner le dépot : 
 
-    git clone git@gitlab.dogstudio.be:devtools/terminaldog.git ~/.scripts
+    git clone git@github.com:Dogstudio/dot-dogs.git ~/.scripts
 
 Ensuite vous devez les ajouter à votre fichier `.bashrc`. 
 
