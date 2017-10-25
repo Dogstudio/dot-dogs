@@ -9,71 +9,30 @@ export DOCKER_PREFIX="\033[4mDOCKER\033[0m -"
 export DOCKER_MACHINE_NAME=""
 export DOCKER_MACHINE_IP=""
 
-COLOR_RED="\033[0;31m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_GREEN="\033[0;32m"
-COLOR_BLUE="\033[1;34m"
-COLOR_LIGHT_RED="\033[1;31m"
-COLOR_LIGHT_GREEN="\033[1;32m"
-COLOR_WHITE="\033[1;37m"
-COLOR_LIGHT_GRAY="\033[0;37m"
-COLOR_NONE="\033[0m"
-
 # -------------------------------------------------------------------------------------------------
 # Validation
 if [ -z "$(command -v docker)" ]; then
     echo -e "${DOCKER_PREFIX} command \"docker\" ${COLOR_RED}not installed${COLOR_NONE}. Abording.\n"
 fi
 
-# -------------------------------------------------------------------------------------------------
-# Auto installation
-
-DOCKER_PATH="$HOME/.sctipts"
-DOCKER_SCRIPT="docker_commands.sh"
-DOCKER_URL="https://raw.githubusercontent.com/Dogstudio/docker-dogs/master/scripts/${DOCKER_SCRIPT}"
-
-[ "$(basename -- $0)" != "$(basename ${DOCKER_SCRIPT})" ] && [ -z "${BASH_SOURCE[0]}" ] && (
-    # If ROOT, install globally
-    [ "$(id -u)" == "0" ] && DOCKER_PATH="/usr/local/bin"
-
-    # Install the file
-    [ -d "$DOCKER_PATH" ] || mkdir -p ${DOCKER_PATH}
-    curl -sS -o ${DOCKER_PATH}/${DOCKER_SCRIPT} ${DOCKER_URL}
-
-    # Add the script in your .(ba|z)shr
-    if [ -e "${DOCKER_PATH}/${DOCKER_SCRIPT}" ]; then
-        [ -e "$HOME/.bashrc" ] && \
-        grep -Fq "${DOCKER_PATH}/${DOCKER_SCRIPT}" "$HOME/.bashrc" || \
-        echo "source ${DOCKER_PATH}/${DOCKER_SCRIPT}" >> $HOME/.bashrc
-
-        [ -e "$HOME/.zshrc" ] && \
-        grep -Fq "${DOCKER_PATH}/${DOCKER_SCRIPT}" "$HOME/.zshrc" || \
-        echo "source ${DOCKER_PATH}/${DOCKER_SCRIPT}" >> $HOME/.zshrc
-    fi
-
-    echo -e "${DOCKER_PREFIX} Commands installed ${COLOR_GREEN}successfully${COLOR_NONE}\n"
-)
-
-# =================================================================================================
-
 #
 #  (try to) Initialize environment with the current running Docker (machine)
 #
 function _dockerInit()
 {
-    # Docker Machine 
-    if [ -n "$(docker-machine status | grep -i 'run')" ]; then
+    # Docker Machine
+    if [ -n "$(docker-machine status 2>/dev/null | grep -i 'run')" ]; then
         DOCKER_MACHINE_NAME=$(docker-machine ls -q --filter "state=Running")
-        
-        if ! DOCKER_MACHINE_IP=$(docker-machine ip $DOCKER_MACHINE_NAME 2>/dev/null); then 
+
+        if ! DOCKER_MACHINE_IP=$(docker-machine ip $DOCKER_MACHINE_NAME 2>/dev/null); then
             echo -e "${DOCKER_PREFIX} The \"${DOCKER_MACHINE_NAME}\" ${COLOR_RED}has no IP${COLOR_NONE}"; return 1
         fi
 
-        if ! docker-machine env 2>&1 >/dev/null; then 
+        if ! docker-machine env 2>&1 >/dev/null; then
             docker-machine regenerate-certs -f ${DOCKER_MACHINE_NAME}
         fi
 
-        if ! docker-machine env 2>&1 >/dev/null; then 
+        if ! docker-machine env 2>&1 >/dev/null; then
             echo -e "${DOCKER_PREFIX} The \"${DOCKER_MACHINE_NAME}\" ${COLOR_RED}has no ENV${COLOR_NONE}"; return 1
         fi
 
@@ -84,16 +43,16 @@ function _dockerInit()
     elif docker info 2>/dev/null >/dev/null ; then
         DOCKER_MACHINE_NAME=$(docker info 2>/dev/null | awk -F':' '/Name/ {print $2}' | tr -d ' ')
         DOCKER_MACHINE_IP="127.0.0.1"
-        
+
         echo -e "${DOCKER_PREFIX} Local Docker deamon is ${COLOR_GREEN}running${COLOR_NONE}."
-    
+
     # None is running
     else
         unset DOCKER_TLS_VERIFY
         unset DOCKER_CERT_PATH
         unset DOCKER_MACHINE_NAME
         unset DOCKER_HOST
-        
+
         echo -e "${DOCKER_PREFIX} Docker ${COLOR_RED} is not running${COLOR_NONE}"; return 1
     fi
 
@@ -104,7 +63,7 @@ function _dockerInit()
 #
 # Initialize the terminal Session
 #
-function _dockerSessionInit() 
+function _dockerSessionInit()
 {
     _dockerGenericAlias
     _dockerInit
@@ -133,6 +92,7 @@ function _dockerAlias()
     alias dologs="docker-compose logs"
     alias doall="docker-compose down && docker-compose rm && docker-compose build --no-cache --force-rm && docker-compose up -d"
     alias doinit="_dockerInit"
+    alias dops="docker ps"
 }
 
 #
@@ -141,7 +101,7 @@ function _dockerAlias()
 function _dockerCompleter()
 {
     if $(type complete >/dev/null); then
-        
+
         # Search for Container
         function _completeContainer()
         {
@@ -179,8 +139,8 @@ function _dockerCompleter()
             }
             complete -d -f -W "active config create env inspect ip kill ls provision restart rm ssh scp start status stop upgrade url version help regenerate-certs" doma
             complete -d -f -F _completeDockerMachine docker-machine
-            complete -F _completeDockerMachine dostart 
-            complete -F _completeDockerMachine dostop 
+            complete -F _completeDockerMachine dostart
+            complete -F _completeDockerMachine dostop
         fi
 
         # Other commands
@@ -198,7 +158,7 @@ function _dockerCompleter()
 function _updateDnsMask()
 {
     DNSMASQ_CONF="$(brew --prefix)/etc/dnsmasq.conf"
-    
+
     if [ -f ${DNSMASQ_CONF} ]; then
         if ! grep "${DOCKER_MACHINE_IP}" ${DNSMASQ_CONF} >/dev/null ; then
             echo -e "${DOCKER_PREFIX} I need ${COLOR_RED}update dnsmasq to match IP to \"${DOCKER_MACHINE_IP}\"${COLOR_NONE}."
