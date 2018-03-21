@@ -87,7 +87,7 @@ function _dockerGenericAlias()
 function _dockerAlias()
 {
     alias doup="docker-compose build && docker-compose up -d --remove-orphans"
-    alias dodown="docker-compose stop"
+    #alias dodown="docker-compose stop"
     alias doreload="dodown && doup"
     alias dologs="docker-compose logs"
     alias doall="docker-compose down && docker-compose rm && docker-compose build --no-cache --force-rm && docker-compose up -d"
@@ -106,9 +106,15 @@ function _dockerCompleter()
         function _completeContainer()
         {
             local word="${COMP_WORDS[COMP_CWORD]}"
-            COMPREPLY=( $(compgen -W "$(docker ps --filter "status=running" --format "{{.Names}}")" -- "$word") )
+
+            if [ $COMP_CWORD -eq 1 ]; then
+                COMPREPLY=( $(compgen -W "$(docker ps --filter "status=running" --format "{{.Names}}")" -- "$word") )
+            else
+                COMPREPLY=( $(compgen -f -- "$word") )
+            fi
         }
         complete -F _completeContainer doshell
+        complete -F _completeContainer dodown
 
         # Search for Services
         function _completeServices()
@@ -191,10 +197,25 @@ function dostop()
 }
 
 
-# Run a shell on the specified container
+# Run a shell or command on the specified container
 function doshell()
 {
-    docker exec -t -i $1 /bin/bash
+    if (( "$#" < "1" )); then
+        echo -e "${DOCKER_PREFIX}${COLOR_RED}Error${COLOR_NONE} No container given."
+    elif (( "$#" < "2" )); then
+        docker exec -t -i "$1" /bin/bash
+    else
+        docker exec -t -i "$@"
+    fi
+}
+
+function dodown()
+{
+    if (( "$#" < "1" )); then
+        docker-compose stop
+    else
+        docker stop $(docker ps --filter="name=$1" --format="{{.Names}}")
+    fi
 }
 
 function dohelp()
