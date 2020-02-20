@@ -1,106 +1,77 @@
 # Dogstudio Shell Scripts
 
-Il s'agit d'une série de scripts permettant d'ajouter des fonctionnalités et des raccourcis à votre terminal. 
+There are some shell scripts that provide extra features and aliases.
 
-> Pour les utilisateurs de Mac, je conseille l'utilisation de "iTerm 2" à la place de "Terminal", l'application native d'Apple.
-
-## Les scripts
+## The scripts
 
 ### Aliases
 
-Ajoute des "alias" de commandes tels que :
+Add some "alias" commands as:
 
-* `l` : efface l'écran et liste le répertoire courant
-* `duh` : calcule la taille du répertoire courant en mode "human readable"
-* `..` : remonte d'un répertoire (`cd ..`)
-* `...` : remonte de deux répertoires (`cd ../..`)
+* `l` : clear the screen and list the current folder
+* `duh` : compute size of current folder (with human readable format)
+* `..` : Go up from one folder level (`cd ..`)
+* `...` : Go up from tow folder levels (`cd ../..`)
 
-La **fonction** `hostedon` permet de récupérer le nom du serveur qui héberge un site : 
+The **function** `hostedon` get the nameserver that host the site:
 
-    $ hostedon www.dogstudio.be
-    dogstudio05.cblue.be.
+    $ hostedon www.laniche.com
+    someserver.laniche.com.
 
 ### Prompt
 
-Modifier l'invite de votre Shell : 
+Change your (bash) shell prompt:
 
-* Ajoute de la couleur : **blue** pour l'utilisateur courant, **rouge** pour `ROOT` ou `SUDO`
-* Affiche l'emplacement : `Local` pour votre machine ou `user@host` pour une connexion distante (SSH)
-* Si vous êtes dans **un projet GIT**, affiche la branche en cours
-    * En **vert** : pas de modification
-    * En **rouge** : modifications pas encore committées
-    * En **jaune** : des fichiers sont ajoutés et prêts à être committés.
+* Add color : **blue** for the current user, **red** for `ROOT` ou `SUDO`
+* Display the location : `Local` for your machnine or `user@host` for a remote connection (SSH)
+* In **a GIT project**, display the current branch
+    * In **green** : for up to date repository
+    * In **red** : when non-staged local changes
+    * In **yellow** : when staged changes but not already commited
 
 ### SSH Autocomplete
 
-Si vous utilisez souvent SSH avec des serveurs distants, vous utilisez certainement `.ssh/config` pour enregister vos paramètres de connexions.
-Ce script permet d'effectuer une autocomplétion sur les noms des connexions.
+If you often use SSH with remote server, you're certainly use `.ssh/config` to store your connection parameters.
+This script brings an autocompletion on connection names.
 
-**Utilisation** : Quand vous tapez le début du nom d'une de vos connexions SSH, utilisez la touhce `TAB` pour compléter ce nom.
+**Usage** : when you type the first letters of the connection, press `TAB` to complete the name.
 
-* `ssh dog[TAB]` => `ssh dogstudio01`  
-
-### Vagrant
-
-Ajout des "alias" pour les commandes _Vagrant_
-
-* `vup` : pour démarrer la VM
-* `vhalt` : pour arrêter la VM
-* `vdestroy` : pour supprimer la VM
-* `vlist` : lister mes VM en cours d'exécution
-
-Si ce script est utilisé **dans une machine Vagrant**, il ajoute seulement la commande `vhalt` qui permet de stopper la machine (et affiche un message d'erreur pour les autres commandes).
+* `ssh dog[TAB]` => `ssh dogstudio01`
 
 ### Docker
 
-Une série de fonctions qui permettent d'interagir avec les conteneurs Docker et les envirionnements `docker-compose`.
+Some features to interact with containers and `docker-compose` environements.
 
-    dohelp # pour plus d'infos.
+    dohelp # for more info.
 
 ### Applications
 
-Il s'agit de commandes liées aux applications installées (PhpStorm, Sublime Text, ...)
-
-#### SublimeText
-
-**Pour les utilisateurs de SublimeText**, ce script permet de lancer l'application en détectant automatiquement _l'environnement_. 
-
-Exécuter la commande `subl` avec comme 1er paramètre : 
-
-* Un **fichier** : ouvre celui-ci
-* Un **répertoire** : si aucun fichier "Projet" n'est détecté, ouvre Sublime et ajoute le répertoire au "workspace"
-* Un **projet** (.sublime-project) : ouvre ce projet dans une nouvelle fenêtre Sublime.
-
-Si vous exécutez la commande sans paramètre, détecte la présence d'un fichier projet dans le répertoire :
-
-* Ouvre le projet si un fichier est détecté
-* Sinon, ajoute le répertoire au "Workspace" courant
+There are commandes for installed applications (PhpStorm, VScode, ...)
 
 ---
 
-## Les configurations
+## The settings
 
-Les fichiers présents dans `configs` sont à placer dans votre répertoire _home_ et permettent une configuration globale :
+The files un `configs` folder must be put in your _home_ directory and brings global configuration:
 
-* `.editorconfig` : pour votre editeur ou ide
-* `.gitignore_global` : pour que GIT ignore certains fichiers de manière global.
+* `.editorconfig` : for your IDE
+* `.gitignore_global` : for GIT (to ignore files globally)
 
-## Installation des scripts
+## Scripts installation
 
-Il faut télécharger les scripts et les placer dans un répertoire de votre choix (ex: `~/.scripts`)
-ou de cloner le dépot : 
+You must download the scripts and place them in the directory of your choice (ex: `~/.scripts`).
+You can also fork and clone the repository.
 
-    git clone git@github.com:Dogstudio/dot-dogs.git ~/.scripts
+    git clone git@github.com:laniche/dot-dogs.git ~/.scripts
 
-Ensuite vous devez les ajouter à votre fichier `.bashrc`. 
+Then you must add these to your `.bashrc` (or `.zshrc`).
 
     source ~/.scripts/all.sh
 
-_Le script `all.sh` permet d'inclure tous les scripts d'un coup._
+_The `all.sh` script include all others._
 
-## Mise à jour
+## Update
 
-Si vous avez cloné le projet avec GIT, il suffit de :
+If you have cloned the GIT repository, you simply must :
 
     git pull origin master
-
